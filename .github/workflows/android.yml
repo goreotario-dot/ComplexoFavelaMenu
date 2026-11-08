@@ -1,0 +1,41 @@
+
+name: Gerar APK Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'ComplexoFavelaMenu-Neon-3.0-Android.zip'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Extrair projeto
+        run: unzip -o ComplexoFavelaMenu-Neon-3.0-Android.zip
+
+      - name: Compilar APK
+        run: gradle -p ComplexoFavelaMenu assembleDebug
+
+      - name: Salvar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Menu-Neon-APK
+          path: ComplexoFavelaMenu/app/build/outputs/apk/debug/*.apk
+          
