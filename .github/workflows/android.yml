@@ -29,7 +29,22 @@ jobs:
 
       - name: Extrair projeto
         run: unzip -o ComplexoFavelaMenu-Neon-3.0-Android.zip
-
+      - name: Corrigir versão do Java
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("ComplexoFavelaMenu/app/build.gradle")
+          s = p.read_text()
+          s = s.replace(
+              "android {",
+              """android {
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }"""
+          )
+          p.write_text(s)
+          PY
       - name: Compilar APK
         run: gradle -p ComplexoFavelaMenu assembleDebug
 
